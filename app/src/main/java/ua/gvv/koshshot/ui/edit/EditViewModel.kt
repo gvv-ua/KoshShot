@@ -1,14 +1,16 @@
 package ua.gvv.koshshot.ui.edit
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import ua.gvv.koshshot.data.entities.Action
+import ua.gvv.koshshot.data.repositories.FigureRepository
 
 class EditViewModel : ViewModel() {
 
     val actions: MutableLiveData<MutableList<Action>> = MutableLiveData()
+    val figures = FigureRepository.getFigures()
 
     init {
         actions.value = mutableListOf()
@@ -32,6 +34,4 @@ class EditViewModel : ViewModel() {
         }
         return bitmap
     }
-
-
 }
