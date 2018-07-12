@@ -1,5 +1,6 @@
 package ua.gvv.koshshot.ui.edit
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_figure_dialog.*
 import ua.gvv.koshshot.R
+import ua.gvv.koshshot.data.entities.ActionType
 
 class FigureDialogFragment : DialogFragment() {
 
@@ -16,7 +18,14 @@ class FigureDialogFragment : DialogFragment() {
         ViewModelProviders.of(this).get(EditViewModel::class.java)
     }
 
-    private val adapter: FigureListAdapter by lazy { FigureListAdapter() }
+    private val adapter: FigureListAdapter by lazy { FigureListAdapter(selectListener) }
+
+    private val selectListener: FigureSelectListener = { figure ->
+        listener?.onFigureSelect(figure.type)
+        dismiss()
+    }
+
+    private var listener: OnFragmentInteractionListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_figure_dialog, container, false)
@@ -30,10 +39,19 @@ class FigureDialogFragment : DialogFragment() {
         }
     }
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is OnFragmentInteractionListener) listener = context
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         adapter.submitList(viewModel.figures)
+    }
+
+    interface OnFragmentInteractionListener {
+        fun onFigureSelect(type: ActionType)
     }
 
     companion object {
